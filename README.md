@@ -20,7 +20,9 @@ Agents collect system data and send it to the centralization server.
 Written in bash and avoiding any funny tools to run in as many environments as possible.
 
 #### Start agent
+```
 ./watcher.js {{ centralization_server }} {{ polling_interval }}
+```
 
 where,
  * `centralization_server` (IP or URL) - the endpoint of your centralization server
