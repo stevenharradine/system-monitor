@@ -52,14 +52,17 @@ const requestHandler = (request, response) => {
 				response.write(data)
 				response.end()
 			});
+		} else if (request.url == "/data.json") {
+			response.write(JSON.stringify (systems))
+			response.end()
 		} else {
 			var html = ""
 			
 			html += "<html><head>"
 			html += "<title>System Monitor</title>"
-			html += "<meta http-equiv='refresh' content='1'>"
 			html += "<link rel='stylesheet' type='text/css' href='styles.css'>"
-			html += "<body>"
+			html += "<body><script src='functionality.js' type='text/javascript'></script><div id='table'></div></body></html>"
+/*
 			html += "<table><tr>"
 			html += "<th>Hostname</th>"
 			html += "<th>cpuLoadAverage</th>"
@@ -98,7 +101,7 @@ const requestHandler = (request, response) => {
 				html += "</tr>"
 			}
 
-			html += "</table><script src='functionality.js' type='text/javascript'></script></body></html>"
+			html += "</table>"*/
 
 			response.write(html)
 			response.end()
