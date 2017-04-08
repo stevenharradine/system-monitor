@@ -19,28 +19,16 @@ function updatePage () {
         var table  = "<table>"
             table += "<tr>"
             table += "<th>Hostname</th>"
-            table += "<th>cpuLoadAverage</th>"
-            table += "<th>numberOfProcessors</th>"
-            table += "<th>memoryTotal</th>"
-            table += "<th>memoryUsed</th>"
-            table += "<th>memoryFree</th>"
-            table += "<th>memoryShared</th>"
-            table += "<th>memoryBuffers</th>"
-            table += "<th>memoryCached</th>"
+            table += "<th>CPU Load</th>"
+            table += "<th>RAM</th>"
             table += "<th>Last updated</th>"
             table += "</tr>"
 
         for (var hostname in data) {
             table += "<tr>"
             table += "<td>" + hostname + "</td>"
-            table += "<td>" + data[hostname]["cpuLoadAverage"] + "</td>"
-            table += "<td>" + data[hostname]["numberOfProcessors"] + "</td>"
-            table += "<td>" + data[hostname]["memoryTotal"] + "</td>"
-            table += "<td>" + data[hostname]["memoryUsed"] + "</td>"
-            table += "<td>" + data[hostname]["memoryFree"] + "</td>"
-            table += "<td>" + data[hostname]["memoryShared"] + "</td>"
-            table += "<td>" + data[hostname]["memoryBuffers"] + "</td>"
-            table += "<td>" + data[hostname]["memoryCached"] + "</td>"
+            table += "<td><canvas id='" + hostname + "-cpu' data-units='CPU Load' data-type='radial-gauge' data-value='" + cpuLoad + "'></canvas></td>"
+            table += "<td><canvas id='" + hostname + "-ram'></canvas></td>"
             table += "<td>" + data[hostname]["time"] + "</td>"
             table += "</tr>"
         }
@@ -48,6 +36,82 @@ function updatePage () {
         table += "</table>"
 
         document.getElementById("table").innerHTML = table
+
+        for (var hostname in data) {
+            var width = 200
+            var height = 200
+
+            var cpuLoad = (data[hostname]["cpuLoadAverage"] / data[hostname]["numberOfProcessors"]) * 100
+            var cpuRadial = new RadialGauge({
+                renderTo: hostname + '-cpu',
+                width: width,
+                height: height,
+                units: '%',
+                title: "CPU Load",
+                value: cpuLoad,
+                minValue: 0,
+                maxValue: 100,
+                majorTicks: [
+                    '20',
+                    '40',
+                    '60',
+                    '80',
+                    '100'
+                ],
+                minorTicks: 2,
+                valueBox: true
+            })
+            cpuRadial.draw()
+
+            var ramUnits = "KB" // default units for free command
+            var ramTotal = data[hostname]["memoryTotal"]
+            var ramUsed = data[hostname]["memoryUsed"];
+
+            if (ramTotal / 1024 > 1) {
+                ramTotal /= 1024
+                ramUnits = "MB"
+            }
+            if (ramTotal / 1024 > 1) {
+                ramTotal /= 1024
+                ramUnits = "GB"
+            }
+            if (ramTotal / 1024 > 1) {
+                ramTotal /= 1024
+                ramUnits = "TB"
+            }
+
+            if (ramUnits == "MB") {
+                ramUsed /= 1024
+            } else if (ramUnits == "GB") {
+                ramUsed /= 1024
+                ramUsed /= 1024
+            } else if (ramUnits == "TB") {
+                ramUsed /= 1024
+                ramUsed /= 1024
+                ramUsed /= 1024
+            }
+
+            var ramRadial = new RadialGauge({
+                renderTo: hostname + '-ram',
+                width: width,
+                height: height,
+                units: ramUnits,
+                title: "RAM",
+                value: ramUsed,
+                minValue: 0,
+                maxValue: ramTotal,
+                majorTicks: [
+                    Math.round (ramTotal/5),
+                    Math.round ((ramTotal/5) * 2),
+                    Math.round ((ramTotal/5) * 3),
+                    Math.round ((ramTotal/5) * 4),
+                    Math.round (ramTotal)
+                ],
+                minorTicks: 2,
+                valueBox: true
+            })
+            ramRadial.draw()
+        }
 
         setTimeout( function () {
             updatePage ()
