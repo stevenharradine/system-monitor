@@ -65,7 +65,7 @@ function updatePage () {
 
             var ramUnits = "KB" // default units for free command
             var ramTotal = data[hostname]["memoryTotal"]
-            var ramUsed = data[hostname]["memoryUsed"];
+            var ramUsed = data[hostname]["memoryTotal"] - data[hostname]["memoryFree"] - data[hostname]["memoryBuffers"] - data[hostname]["memoryCached"] + data[hostname]["memoryShared"]
 
             if (ramTotal / 1024 > 1) {
                 ramTotal /= 1024
@@ -91,6 +91,13 @@ function updatePage () {
                 ramUsed /= 1024
             }
 
+            ramSteps = []
+            ramSteps[0] = Math.round (ramTotal/5)
+            ramSteps[1] = Math.round ((ramTotal/5) * 2)
+            ramSteps[2] = Math.round ((ramTotal/5) * 3)
+            ramSteps[3] = Math.round ((ramTotal/5) * 4)
+            ramSteps[4] = Math.round (ramTotal)
+
             var ramRadial = new RadialGauge({
                 renderTo: hostname + '-ram',
                 width: width,
@@ -101,11 +108,17 @@ function updatePage () {
                 minValue: 0,
                 maxValue: ramTotal,
                 majorTicks: [
-                    Math.round (ramTotal/5),
-                    Math.round ((ramTotal/5) * 2),
-                    Math.round ((ramTotal/5) * 3),
-                    Math.round ((ramTotal/5) * 4),
-                    Math.round (ramTotal)
+                    ramSteps[0],
+                    ramSteps[1],
+                    ramSteps[2],
+                    ramSteps[3],
+                    ramSteps[4]
+                ],
+                highlights: [
+                    { from: 0, to: ramTotal*.3, color: 'rgba(0,0,0,0)' },
+                    { from: ramTotal*.3, to: ramTotal*.6, color: 'rgba(0,0,0,.05)' },
+                    { from: ramTotal*.6, to: ramTotal*.8, color: 'rgba(0,0,0,.2)' },
+                    { from: ramTotal*.8, to: ramTotal, color: 'rgba(0,0,0,.4)' }
                 ],
                 minorTicks: 2,
                 valueBox: true
