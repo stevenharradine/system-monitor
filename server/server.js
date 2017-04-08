@@ -1,4 +1,5 @@
 const http = require('http')  
+const fs = require('fs')
 const port = 2017
 var systems = {}
 
@@ -35,51 +36,73 @@ const requestHandler = (request, response) => {
 		response.end()
 
 	} else if (request.method == "GET") {
-		var html = ""
-		
-		html += "<html><head><title>System Monitor</title><meta http-equiv='refresh' content='1'><body>"
-		html += "<table><tr>"
-		html += "<th>Hostname</th>"
-		html += "<th>cpuLoadAverage</th>"
-		html += "<th>numberOfProcessors</th>"
-		html += "<th>memoryTotal</th>"
-		html += "<th>memoryUsed</th>"
-		html += "<th>memoryFree</th>"
-		html += "<th>memoryShared</th>"
-		html += "<th>memoryBuffers</th>"
-		html += "<th>memoryCached</th>"
-		html += "<th>Last updated</th>"
-		html += "</tr>"
-
-		for(var hostname in systems){
-			var cpuLoadAverage = systems[hostname]["cpuLoadAverage"];
-			var numberOfProcessors = systems[hostname]["numberOfProcessors"];
-			var memoryTotal = systems[hostname]["memoryTotal"];
-			var memoryUsed = systems[hostname]["memoryUsed"];
-			var memoryFree = systems[hostname]["memoryFree"];
-			var memoryShared = systems[hostname]["memoryShared"];
-			var memoryBuffers = systems[hostname]["memoryBuffers"];
-			var memoryCached = systems[hostname]["memoryCached"];
-			var time = systems[hostname]["time"];
+		if (request.url == "/styles.css") {
+			fs.readFile('styles.css', 'utf8', function (err,data) {
+				if (err) {
+					return console.log(err);
+				}
+				response.write(data)
+				response.end()
+			});
+		} else if (request.url == "/functionality.js") {
+			fs.readFile('functionality.js', 'utf8', function (err,data) {
+				if (err) {
+					return console.log(err);
+				}
+				response.write(data)
+				response.end()
+			});
+		} else {
+			var html = ""
 			
-			html += "<tr>"
-			html += "<td>" + hostname + "</td>"
-			html += "<td>" + cpuLoadAverage + "</td>"
-			html += "<td>" + numberOfProcessors + "</td>"
-			html += "<td>" + memoryTotal + "</td>"
-			html += "<td>" + memoryUsed + "</td>"
-			html += "<td>" + memoryFree + "</td>"
-			html += "<td>" + memoryShared + "</td>"
-			html += "<td>" + memoryBuffers + "</td>"
-			html += "<td>" + memoryCached + "</td>"
-			html += "<td>" + time + "</td>"
+			html += "<html><head>"
+			html += "<title>System Monitor</title>"
+			html += "<meta http-equiv='refresh' content='1'>"
+			html += "<link rel='stylesheet' type='text/css' href='styles.css'>"
+			html += "<body>"
+			html += "<table><tr>"
+			html += "<th>Hostname</th>"
+			html += "<th>cpuLoadAverage</th>"
+			html += "<th>numberOfProcessors</th>"
+			html += "<th>memoryTotal</th>"
+			html += "<th>memoryUsed</th>"
+			html += "<th>memoryFree</th>"
+			html += "<th>memoryShared</th>"
+			html += "<th>memoryBuffers</th>"
+			html += "<th>memoryCached</th>"
+			html += "<th>Last updated</th>"
 			html += "</tr>"
-		}
 
-		html += "</table></body></html>"
-		
-		response.write(html)
-		response.end()
+			for(var hostname in systems){
+				var cpuLoadAverage = systems[hostname]["cpuLoadAverage"];
+				var numberOfProcessors = systems[hostname]["numberOfProcessors"];
+				var memoryTotal = systems[hostname]["memoryTotal"];
+				var memoryUsed = systems[hostname]["memoryUsed"];
+				var memoryFree = systems[hostname]["memoryFree"];
+				var memoryShared = systems[hostname]["memoryShared"];
+				var memoryBuffers = systems[hostname]["memoryBuffers"];
+				var memoryCached = systems[hostname]["memoryCached"];
+				var time = systems[hostname]["time"];
+
+				html += "<tr>"
+				html += "<td>" + hostname + "</td>"
+				html += "<td>" + cpuLoadAverage + "</td>"
+				html += "<td>" + numberOfProcessors + "</td>"
+				html += "<td>" + memoryTotal + "</td>"
+				html += "<td>" + memoryUsed + "</td>"
+				html += "<td>" + memoryFree + "</td>"
+				html += "<td>" + memoryShared + "</td>"
+				html += "<td>" + memoryBuffers + "</td>"
+				html += "<td>" + memoryCached + "</td>"
+				html += "<td>" + time + "</td>"
+				html += "</tr>"
+			}
+
+			html += "</table><script src='functionality.js' type='text/javascript'></script></body></html>"
+
+			response.write(html)
+			response.end()
+		}
 	}
 
 
