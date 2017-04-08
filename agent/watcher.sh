@@ -21,7 +21,7 @@ do
 	jsonPayload="{\"hostname\": \"$hostname\",\"time\":\"$currentTime\",\"cpuLoadAverage\":$cpuLoadAverage,\"numberOfProcessors\":$numberOfProcessors,\"memoryTotal\":$memoryTotal,\"memoryUsed\":$memoryUsed,\"memoryFree\":$memoryFree,\"memoryShared\":$memoryShared,\"memoryBuffers\":$memoryBuffers,\"memoryCached\":$memoryCached}"
 
 	curl -X POST --header "data: $jsonPayload" $ip:2017
-	echo "done"
+	echo " . Done"
 
 	sleep $delay
 done
