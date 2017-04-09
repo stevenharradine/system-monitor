@@ -94,11 +94,11 @@ function updatePage () {
 
             ramSteps = []
             ramSteps[0] = 0
-            ramSteps[1] = round ((ramTotal/5) * 1)
-            ramSteps[2] = round ((ramTotal/5) * 2)
-            ramSteps[3] = round ((ramTotal/5) * 3)
-            ramSteps[4] = round ((ramTotal/5) * 4)
-            ramSteps[5] = round ((ramTotal/5) * 5)
+            ramSteps[1] = round ((ramTotal/5) * 1, 2)
+            ramSteps[2] = round ((ramTotal/5) * 2, 2)
+            ramSteps[3] = round ((ramTotal/5) * 3, 2)
+            ramSteps[4] = round ((ramTotal/5) * 4, 2)
+            ramSteps[5] = round ((ramTotal/5) * 5, 2)
 
             var ramRadial = new RadialGauge({
                 renderTo: hostname + '-ram',
