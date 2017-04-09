@@ -12,10 +12,17 @@ function fetchJSONFile(path, callback) {
     httpRequest.send()
 }
 
-updatePage ();
+var guages = []
+updatePage ()
 
 function updatePage () {
     fetchJSONFile('data.json', function(data){
+        // TODO: temp fix for memory leak, need to reuse the existing elements to get them to update (and animate)
+        for (i = 0; i < guages.length; i++){
+                guages[i].destroy()
+        }
+        guages=[]
+
         var table  = "<table>"
             table += "<tr>"
             table += "<th>Hostname</th>"
@@ -63,6 +70,7 @@ function updatePage () {
                 valueBox: true
             })
             cpuRadial.draw()
+            guages.push(cpuRadial);
 
             var ramUnits = "KB" // default units for free command
             var ramTotal = data[hostname]["memoryTotal"]
@@ -127,6 +135,7 @@ function updatePage () {
                 valueBox: true
             })
             ramRadial.draw()
+            guages.push(ramRadial);
         }
 
         setTimeout( function () {
