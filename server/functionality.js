@@ -52,6 +52,7 @@ function updatePage () {
                 minValue: 0,
                 maxValue: 100,
                 majorTicks: [
+                    '0',
                     '20',
                     '40',
                     '60',
@@ -92,11 +93,12 @@ function updatePage () {
             }
 
             ramSteps = []
-            ramSteps[0] = Math.round (ramTotal/5)
-            ramSteps[1] = Math.round ((ramTotal/5) * 2)
-            ramSteps[2] = Math.round ((ramTotal/5) * 3)
-            ramSteps[3] = Math.round ((ramTotal/5) * 4)
-            ramSteps[4] = Math.round (ramTotal)
+            ramSteps[0] = 0
+            ramSteps[1] = round ((ramTotal/5) * 1)
+            ramSteps[2] = round ((ramTotal/5) * 2)
+            ramSteps[3] = round ((ramTotal/5) * 3)
+            ramSteps[4] = round ((ramTotal/5) * 4)
+            ramSteps[5] = round ((ramTotal/5) * 5)
 
             var ramRadial = new RadialGauge({
                 renderTo: hostname + '-ram',
@@ -112,13 +114,14 @@ function updatePage () {
                     ramSteps[1],
                     ramSteps[2],
                     ramSteps[3],
-                    ramSteps[4]
+                    ramSteps[4],
+                    ramSteps[5]
                 ],
                 highlights: [
                     { from: 0, to: ramTotal*.3, color: 'rgba(0,0,0,0)' },
-                    { from: ramTotal*.3, to: ramTotal*.6, color: 'rgba(0,0,0,.05)' },
-                    { from: ramTotal*.6, to: ramTotal*.8, color: 'rgba(0,0,0,.2)' },
-                    { from: ramTotal*.8, to: ramTotal, color: 'rgba(0,0,0,.4)' }
+                    { from: ramTotal*.3, to: ramTotal*.65, color: 'rgba(0,0,0,.05)' },
+                    { from: ramTotal*.65, to: ramTotal*.85, color: 'rgba(0,0,0,.2)' },
+                    { from: ramTotal*.85, to: ramTotal, color: 'rgba(0,0,0,.4)' }
                 ],
                 minorTicks: 2,
                 valueBox: true
@@ -130,4 +133,9 @@ function updatePage () {
             updatePage ()
         }, 3000)
     })
+}
+
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
 }
