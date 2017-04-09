@@ -23,7 +23,7 @@ const requestHandler = (request, response) => {
 
 			response.write("Accepted")
 		} catch (e) {
-			response.write("Error")
+			response.write("Error: " + e)
 		}
 		response.end()
 
