@@ -18,9 +18,9 @@ do
 	memorySReclaimable=`cat /proc/meminfo | grep SReclaimable | awk '{ print $2 }'`
 	memorySwapCached=`cat /proc/meminfo | grep SwapCached | awk '{ print $2 }'`
 	memoryNFSUnstable=`cat /proc/meminfo | grep NFS_Unstable | awk '{ print $2 }'`
-	memoryUsed=`free | grep "Mem:" | awk '{ print $3 }'`
+	memoryUsed=$(( memoryTotal - memoryFree ))
 
-	memoryRealUsed=$((memoryUsed - (memoryBuffers + memoryCached + memorySReclaimable + memorySwapCached + memoryNFSUnstable) ))
+	memoryRealUsed=$(( memoryTotal - (memoryFree + memoryBuffers + memoryCached) ))
 
 	jsonPayload="{\"hostname\": \"$hostname\",\"time\":\"$currentTime\",\"cpuLoadAverage\":$cpuLoadAverage,\"numberOfProcessors\":$numberOfProcessors,\"memoryTotal\":$memoryTotal,\"memoryUsed\":$memoryRealUsed}"
 
