@@ -12,10 +12,6 @@ const requestHandler = (request, response) => {
 			var numberOfProcessors = payload.numberOfProcessors
 			var memoryTotal = payload.memoryTotal
 			var memoryUsed = payload.memoryUsed
-			var memoryFree = payload.memoryFree
-			var memoryShared = payload.memoryShared
-			var memoryBuffers = payload.memoryBuffers
-			var memoryCached = payload.memoryCached
 			var time = payload.time
 
 			systems[hostname] = {}
@@ -23,10 +19,6 @@ const requestHandler = (request, response) => {
 			systems[hostname]['numberOfProcessors'] = numberOfProcessors
 			systems[hostname]['memoryTotal'] = memoryTotal
 			systems[hostname]['memoryUsed'] = memoryUsed
-			systems[hostname]['memoryFree'] = memoryFree
-			systems[hostname]['memoryShared'] = memoryShared
-			systems[hostname]['memoryBuffers'] = memoryBuffers
-			systems[hostname]['memoryCached'] = memoryCached
 			systems[hostname]['time'] = time
 
 			response.write("Accepted")

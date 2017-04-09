@@ -65,7 +65,7 @@ function updatePage () {
 
             var ramUnits = "KB" // default units for free command
             var ramTotal = data[hostname]["memoryTotal"]
-            var ramUsed = data[hostname]["memoryUsed"] - data[hostname]["memoryBuffers"] - data[hostname]["memoryCached"]
+            var ramUsed = data[hostname]["memoryUsed"]
 
             if (ramTotal / 1024 > 1) {
                 ramTotal /= 1024
