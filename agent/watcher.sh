@@ -22,8 +22,31 @@ do
 
 	memoryRealUsed=$(( memoryTotal - (memoryFree + memoryBuffers + memoryCached) ))
 
-	jsonPayload="{\"hostname\": \"$hostname\",\"time\":\"$currentTime\",\"cpuLoadAverage\":$cpuLoadAverage,\"numberOfProcessors\":$numberOfProcessors,\"memoryTotal\":$memoryTotal,\"memoryUsed\":$memoryRealUsed}"
+	echo -n "{" > jsonFilesystems.json
+	dirListing=`df | grep -v Filesystem`
+	lineCounter=1
+	numberOfLines=`df | grep -v Filesystem | wc -l`
+	df | grep -v Filesystem | while read line; do
+	    mountPath=`echo $line | awk '{ print $6 }'`
+	    mountAvailable=`echo $line | awk '{ print $4 }'`
+	    mountUsed=`echo $line | awk '{ print $3 }'`
+	    mountTotal=`echo $line | awk '{ print $2 }'`
+	    mountFilesystem=`echo $line | awk '{ print $1 }'`
 
+	    comma=","
+	    if [ "$numberOfLines" -eq "$lineCounter" ]; then
+	    	comma=""
+	    fi
+	    ((lineCounter++))
+
+		echo -n "\"$mountPath\": { \"mountAvailable\": \"$mountAvailable\", \"mountUsed\": \"$mountUsed\", \"mountFilesystem\": \"$mountFilesystem\" , \"mountTotal\": \"$mountTotal\" }$comma" >> jsonFilesystems.json
+	done
+	echo -n "}" >> jsonFilesystems.json
+
+	jsonFilesystems=`cat jsonFilesystems.json`
+	rm jsonFilesystems.json
+
+	jsonPayload="{\"hostname\": \"$hostname\",\"time\":\"$currentTime\",\"cpuLoadAverage\":$cpuLoadAverage,\"numberOfProcessors\":$numberOfProcessors,\"memoryTotal\":$memoryTotal,\"memoryUsed\":$memoryRealUsed,\"partitions\":$jsonFilesystems}"
 	curl -X POST --header "data: $jsonPayload" $ip:2017
 	echo " . Done"
 

@@ -28,6 +28,7 @@ function updatePage () {
             table += "<th>Hostname</th>"
             table += "<th>CPU Load</th>"
             table += "<th>RAM</th>"
+            table += "<th>Partitions</th>"
             table += "<th>Last updated</th>"
             table += "</tr>"
 
@@ -36,6 +37,7 @@ function updatePage () {
             table += "<td>" + hostname + "</td>"
             table += "<td><canvas id='" + hostname + "-cpu' data-units='CPU Load' data-type='radial-gauge' data-value='" + cpuLoad + "'></canvas></td>"
             table += "<td><canvas id='" + hostname + "-ram'></canvas></td>"
+            table += "<td><canvas id='" + hostname + "-disk'></canvas></td>"
             table += "<td>" + data[hostname]["time"] + "</td>"
             table += "</tr>"
         }
@@ -117,14 +119,7 @@ function updatePage () {
                 value: ramUsed,
                 minValue: 0,
                 maxValue: ramTotal,
-                majorTicks: [
-                    ramSteps[0],
-                    ramSteps[1],
-                    ramSteps[2],
-                    ramSteps[3],
-                    ramSteps[4],
-                    ramSteps[5]
-                ],
+                majorTicks: ramSteps,
                 highlights: [
                     { from: 0, to: ramTotal*.3, color: 'rgba(0,0,0,0)' },
                     { from: ramTotal*.3, to: ramTotal*.65, color: 'rgba(0,0,0,.05)' },
@@ -136,6 +131,67 @@ function updatePage () {
             })
             ramRadial.draw()
             guages.push(ramRadial);
+
+            var mountAvailable = data[hostname]["partitions"]["/"]["mountAvailable"]
+            var mountUsed = data[hostname]["partitions"]["/"]["mountUsed"]
+            var mountTotal = data[hostname]["partitions"]["/"]["mountTotal"]
+
+            var diskTotal = mountTotal
+            var diskUsed = mountUsed
+            var diskUnits = "KB"
+            if (diskTotal / 1024 > 1) {
+                diskTotal /= 1024
+                diskUnits = "MB"
+            }
+            if (diskTotal / 1024 > 1) {
+                diskTotal /= 1024
+                diskUnits = "GB"
+            }
+            if (diskTotal / 1024 > 1) {
+                diskTotal /= 1024
+                diskUnits = "TB"
+            }
+
+            if (diskUnits == "MB") {
+                diskUsed /= 1024
+            } else if (diskUnits == "GB") {
+                diskUsed /= 1024
+                diskUsed /= 1024
+            } else if (diskUnits == "TB") {
+                diskUsed /= 1024
+                diskUsed /= 1024
+                diskUsed /= 1024
+            }
+
+            diskSteps = []
+            diskSteps[0] = 0
+            diskSteps[1] = round ((diskTotal/5) * 1, 2)
+            diskSteps[2] = round ((diskTotal/5) * 2, 2)
+            diskSteps[3] = round ((diskTotal/5) * 3, 2)
+            diskSteps[4] = round ((diskTotal/5) * 4, 2)
+            diskSteps[5] = round ((diskTotal/5) * 5, 2)
+
+            var diskRadial = new RadialGauge({
+                renderTo: hostname + '-disk',
+                width: width,
+                height: height,
+                units: diskUnits,
+                title: "/",
+                value: diskUsed,
+                minValue: 0,
+                maxValue: diskTotal,
+                majorTicks: diskSteps,
+                highlights: [
+                    { from: 0, to: diskTotal*.50, color: 'rgba(0,0,0,0)' },
+                    { from: diskTotal*.50, to: diskTotal*.75, color: 'rgba(0,0,0,.05)' },
+                    { from: diskTotal*.75, to: diskTotal*.90, color: 'rgba(0,0,0,.2)' },
+                    { from: diskTotal*.90, to: diskTotal, color: 'rgba(0,0,0,.4)' }
+                ],
+                minorTicks: 2,
+                valueBox: true
+            })
+            diskRadial.draw()
+            guages.push(diskRadial);
         }
 
         setTimeout( function () {

@@ -19,6 +19,9 @@ const requestHandler = (request, response) => {
 			systems[hostname]['numberOfProcessors'] = numberOfProcessors
 			systems[hostname]['memoryTotal'] = memoryTotal
 			systems[hostname]['memoryUsed'] = memoryUsed
+
+			systems[hostname]['partitions'] = payload.partitions
+
 			systems[hostname]['time'] = time
 
 			response.write("Accepted")
@@ -53,7 +56,12 @@ const requestHandler = (request, response) => {
 				response.end()
 			});
 		} else if (request.url == "/data.json") {
-			response.write(JSON.stringify (systems))
+			try {
+				console.log (JSON.stringify (systems))
+				response.write(JSON.stringify (systems))
+			} catch (e) {
+				response.write(e)
+			}
 			response.end()
 		} else {
 			var html = ""
