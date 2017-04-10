@@ -35,7 +35,7 @@ function updatePage () {
         for (var hostname in data) {
             table += "<tr>"
             table += "<td>" + hostname + "</td>"
-            table += "<td><canvas id='" + hostname + "-cpu' data-units='CPU Load' data-type='radial-gauge' data-value='" + cpuLoad + "'></canvas></td>"
+            table += "<td><canvas id='" + hostname + "-cpu'></canvas></td>"
             table += "<td><canvas id='" + hostname + "-ram'></canvas></td>"
             table += "<td class='partitions'>"
             var partitionCounter = 0
@@ -62,18 +62,24 @@ for (partition in data[hostname]["partitions"]) {
                     renderTo: hostname + '-cpu',
                     width: width,
                     height: height,
-                    units: '%',
-                    title: "CPU Load",
-                    value: cpuLoad,
+                    units: 'Load Average',
+                    title: "CPU",
+                    value: round (data[hostname]["cpuLoadAverage"], 2),
                     minValue: 0,
-                    maxValue: 100,
+                    maxValue: data[hostname]["numberOfProcessors"],
                     majorTicks: [
-                        '0',
-                        '20',
-                        '40',
-                        '60',
-                        '80',
-                        '100'
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 0, 1),
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 1, 1),
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 2, 1),
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 3, 1),
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 4, 1),
+                        round ((data[hostname]["numberOfProcessors"] / 5) * 5, 1)
+                    ],
+                    highlights: [
+                        { from: 0, to: data[hostname]["numberOfProcessors"]*.3, color: 'rgba(0,0,0,0)' },
+                        { from: data[hostname]["numberOfProcessors"]*.3, to: data[hostname]["numberOfProcessors"]*.65, color: 'rgba(0,0,0,.05)' },
+                        { from: data[hostname]["numberOfProcessors"]*.65, to: data[hostname]["numberOfProcessors"]*.85, color: 'rgba(0,0,0,.2)' },
+                        { from: data[hostname]["numberOfProcessors"]*.85, to: data[hostname]["numberOfProcessors"], color: 'rgba(0,0,0,.4)' }
                     ],
                     minorTicks: 2,
                     valueBox: true
