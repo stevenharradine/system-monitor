@@ -223,7 +223,7 @@ for (partition in data[hostname]["partitions"]) {
 
         setTimeout( function () {
             updatePage ()
-        }, 100000)
+        }, 3000)
     })
 }
 
