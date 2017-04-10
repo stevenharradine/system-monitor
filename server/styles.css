@@ -1,0 +1,6 @@
+td.partitions {
+	width: 420px;
+	height: 200px;
+	display: block;
+	overflow: auto;
+}
