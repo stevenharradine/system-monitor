@@ -23,34 +23,28 @@ function updatePage () {
         }
         guages=[]
 
-        var table  = "<table>"
-            table += "<tr>"
-            table += "<th>Hostname</th>"
-            table += "<th>CPU Load</th>"
-            table += "<th>RAM</th>"
-            table += "<th width='400px'>Partitions</th>"
-            table += "<th>Last updated</th>"
-            table += "</tr>"
-
+        var html = ""
         for (var hostname in data) {
-            table += "<tr>"
-            table += "<td>" + hostname + "</td>"
-            table += "<td><canvas id='" + hostname + "-cpu'></canvas></td>"
-            table += "<td><canvas id='" + hostname + "-ram'></canvas></td>"
-            table += "<td class='partitions'>"
+            html += "<div class=\"" + hostname + " system\">"
+            html += "<div>"
+            html += "<div class='hostname'>" + hostname + "</div>"
+            html += "<div class='last-updated'>" + data[hostname]["time"] + "</div>"
+            html += "</div>"
+            html += "<canvas class='cpu' id='" + hostname + "-cpu'></canvas>"
+            html += "<canvas class='ram' id='" + hostname + "-ram'></canvas>"
+            html += "<div class='partitions'>"
             var partitionCounter = 0
 for (partition in data[hostname]["partitions"]) {
-            table += "<canvas id='" + hostname + "-disk" + partitionCounter + "'></canvas>"
+            html += "<canvas class='disk' id='" + hostname + "-disk" + partitionCounter + "'></canvas>"
             partitionCounter++
 }
-            table += "</td>"
-            table += "<td>" + data[hostname]["time"] + "</td>"
-            table += "</tr>"
+            html += "</div>"
+            html += "</div>"
         }
 
-        table += "</table>"
+        html += "</table>"
 
-        document.getElementById("table").innerHTML = table
+        document.getElementById("table").innerHTML = html
 
         for (var hostname in data) {
             var width = 200
@@ -223,7 +217,7 @@ for (partition in data[hostname]["partitions"]) {
 
         setTimeout( function () {
             updatePage ()
-        }, 3000)
+        }, 30000000)
     })
 }
 

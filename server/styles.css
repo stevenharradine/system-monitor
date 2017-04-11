@@ -1,6 +1,14 @@
-td.partitions {
-	width: 420px;
-	height: 200px;
-	display: block;
-	overflow: auto;
+.system {
+	width: 400px;
+	margin: 0 auto auto;
+}
+.hostname {
+	font-size: 2em;
+	text-align: center;
+}
+.last-updated {
+	text-align: right;
+}
+.partitions {
+	width: 400px;
 }
