@@ -155,70 +155,66 @@ for (partition in data[hostname]["partitions"]) {
             try {
                 var partitionIndex = 0
                 for (partition in data[hostname]["partitions"]) {
-                    try {
-                        var mountAvailable = data[hostname]["partitions"][partition]["mountAvailable"]
-                        var mountUsed = data[hostname]["partitions"][partition]["mountUsed"]
-                        var mountTotal = data[hostname]["partitions"][partition]["mountTotal"]
+                    var mountAvailable = data[hostname]["partitions"][partition]["mountAvailable"]
+                    var mountUsed = data[hostname]["partitions"][partition]["mountUsed"]
+                    var mountTotal = data[hostname]["partitions"][partition]["mountTotal"]
 
-                        var diskTotal = mountTotal
-                        var diskUsed = mountUsed
-                        var diskUnits = "KB"
-                        if (diskTotal / 1024 > 1) {
-                            diskTotal /= 1024
-                            diskUnits = "MB"
-                        }
-                        if (diskTotal / 1024 > 1) {
-                            diskTotal /= 1024
-                            diskUnits = "GB"
-                        }
-                        if (diskTotal / 1024 > 1) {
-                            diskTotal /= 1024
-                            diskUnits = "TB"
-                        }
-
-                        if (diskUnits == "MB") {
-                            diskUsed /= 1024
-                        } else if (diskUnits == "GB") {
-                            diskUsed /= 1024
-                            diskUsed /= 1024
-                        } else if (diskUnits == "TB") {
-                            diskUsed /= 1024
-                            diskUsed /= 1024
-                            diskUsed /= 1024
-                        }
-                        diskSteps = []
-                        diskSteps[0] = 0
-                        diskSteps[1] = round ((diskTotal/5) * 1, 2)
-                        diskSteps[2] = round ((diskTotal/5) * 2, 2)
-                        diskSteps[3] = round ((diskTotal/5) * 3, 2)
-                        diskSteps[4] = round ((diskTotal/5) * 4, 2)
-                        diskSteps[5] = round ((diskTotal/5) * 5, 2)
-
-                        var diskRadial = new LinearGauge({
-                            renderTo: hostname + '-disk' + partitionIndex,
-                            width: width*2,
-                            height: height/2,
-                            units: diskUnits,
-                            title: partition,
-                            value: diskUsed,
-                            minValue: 0,
-                            maxValue: diskTotal,
-                            majorTicks: diskSteps,
-                            highlights: [
-                                { from: 0, to: diskTotal*.50, color: 'rgba(0,0,0,0)' },
-                                { from: diskTotal*.50, to: diskTotal*.75, color: 'rgba(0,0,0,.05)' },
-                                { from: diskTotal*.75, to: diskTotal*.90, color: 'rgba(0,0,0,.2)' },
-                                { from: diskTotal*.90, to: diskTotal, color: 'rgba(0,0,0,.4)' }
-                            ],
-                            minorTicks: 2,
-                            valueBox: true
-                        })
-                        diskRadial.draw()
-                        guages.push(diskRadial);
-                        partitionIndex++;
-                    } catch (e) {
-                        console.log ("Disk Radial Guage failure in " + partition + ": " + e)
+                    var diskTotal = mountTotal
+                    var diskUsed = mountUsed
+                    var diskUnits = "KB"
+                    if (diskTotal / 1024 > 1) {
+                        diskTotal /= 1024
+                        diskUnits = "MB"
                     }
+                    if (diskTotal / 1024 > 1) {
+                        diskTotal /= 1024
+                        diskUnits = "GB"
+                    }
+                    if (diskTotal / 1024 > 1) {
+                        diskTotal /= 1024
+                        diskUnits = "TB"
+                    }
+
+                    if (diskUnits == "MB") {
+                        diskUsed /= 1024
+                    } else if (diskUnits == "GB") {
+                        diskUsed /= 1024
+                        diskUsed /= 1024
+                    } else if (diskUnits == "TB") {
+                        diskUsed /= 1024
+                        diskUsed /= 1024
+                        diskUsed /= 1024
+                    }
+                    diskSteps = []
+                    diskSteps[0] = 0
+                    diskSteps[1] = round ((diskTotal/5) * 1, 2)
+                    diskSteps[2] = round ((diskTotal/5) * 2, 2)
+                    diskSteps[3] = round ((diskTotal/5) * 3, 2)
+                    diskSteps[4] = round ((diskTotal/5) * 4, 2)
+                    diskSteps[5] = round ((diskTotal/5) * 5, 2)
+
+                    var diskRadial = new LinearGauge({
+                        renderTo: hostname + '-disk' + partitionIndex,
+                        width: width*2,
+                        height: height/2,
+                        units: diskUnits,
+                        title: partition,
+                        value: diskUsed,
+                        minValue: 0,
+                        maxValue: diskTotal,
+                        majorTicks: diskSteps,
+                        highlights: [
+                            { from: 0, to: diskTotal*.50, color: 'rgba(0,0,0,0)' },
+                            { from: diskTotal*.50, to: diskTotal*.75, color: 'rgba(0,0,0,.05)' },
+                            { from: diskTotal*.75, to: diskTotal*.90, color: 'rgba(0,0,0,.2)' },
+                            { from: diskTotal*.90, to: diskTotal, color: 'rgba(0,0,0,.4)' }
+                        ],
+                        minorTicks: 2,
+                        valueBox: true
+                    })
+                    diskRadial.draw()
+                    guages.push(diskRadial);
+                    partitionIndex++;
                 }
             } catch (e) {
                 console.log ("Disk Radial Guage interation failure: " + e)
