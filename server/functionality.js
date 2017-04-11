@@ -217,7 +217,7 @@ for (partition in data[hostname]["partitions"]) {
                         guages.push(diskRadial);
                         partitionIndex++;
                     } catch (e) {
-                        console.log ("Disk Radial Guage failure: " + e)
+                        console.log ("Disk Radial Guage failure in " + partition ": " + e)
                     }
                 }
             } catch (e) {
