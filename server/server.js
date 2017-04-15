@@ -57,20 +57,46 @@ const requestHandler = (request, response) => {
 			});
 		} else if (request.url == "/data.json") {
 			try {
-				console.log (JSON.stringify (systems))
 				response.write(JSON.stringify (systems))
 			} catch (e) {
 				response.write(e)
 			}
 			response.end()
-		} else {
+		} else if (request.url == "/server.html") {
 			var html = ""
-			
+
 			html += "<html><head>"
 			html += "<title>System Monitor</title>"
 			html += "<link rel='stylesheet' type='text/css' href='styles.css'>"
 			html += "<script src='gauge.min.js'></script>"
-			html += "<body>"
+			html += "</head><body>"
+			html += "<div id='table'></div><script src='functionality.js' type='text/javascript'></script></body></html>"
+
+			response.write(html)
+			response.end()
+		} else if (request.url == "/") {
+			var html = ""
+
+			html += "<html><head>"
+			html += "<title>System Monitor</title>"
+			html += "<link rel='stylesheet' type='text/css' href='styles.css'>"
+			html += "<script src='gauge.min.js'></script>"
+			html += "</head><body>"
+			html += "<ul id=\"list\">"
+			html += "</ul>"
+			html += "<script src='functionality.js' type='text/javascript'></script></body></html>"
+
+			response.write(html)
+			response.end()
+		} else {
+			var html = ""
+			var path = request.url.substring (1, request.url.length - 5)
+
+			html += "<html><head>"
+			html += "<title>System Monitor " + path + "</title>"
+			html += "<link rel='stylesheet' type='text/css' href='styles.css'>"
+			html += "<script src='gauge.min.js'></script>"
+			html += "</head><body>"
 			html += "<div id='table'></div><script src='functionality.js' type='text/javascript'></script></body></html>"
 
 			response.write(html)

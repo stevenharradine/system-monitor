@@ -12,11 +12,30 @@ function fetchJSONFile(path, callback) {
     httpRequest.send()
 }
 
-var guages = []
-updatePage ()
+var path = location.pathname.substring (1, location.pathname.length - 5)
+if (path == "/" ) {
+    updateListing ()
+} else {
+    var guages = []
+    updatePage ()
+}
+
+
+function updateListing () {
+    fetchJSONFile('data.json', function(data){
+        html = ""
+        for (var hostname in data) {
+            html += "<li><a href=\"" + hostname + ".html\" >" + hostname + "</a></li>"
+        }
+        document.getElementById("list").innerHTML = html
+    })
+}
 
 function updatePage () {
     fetchJSONFile('data.json', function(data){
+        var path = window.location.pathname
+        var hostname = path.substring(1, path.length - 5)
+        console.log (hostname)
         // TODO: temp fix for memory leak, need to reuse the existing elements to get them to update (and animate)
         for (i = 0; i < guages.length; i++){
                 guages[i].destroy()
@@ -24,23 +43,21 @@ function updatePage () {
         guages=[]
 
         var html = ""
-        for (var hostname in data) {
-            html += "<div class=\"" + hostname + " system\">"
-            html += "<div>"
-            html += "<div class='hostname'>" + hostname + "</div>"
-            html += "<div class='last-updated'>" + data[hostname]["time"] + "</div>"
-            html += "</div>"
-            html += "<canvas class='cpu' id='" + hostname + "-cpu'></canvas>"
-            html += "<canvas class='ram' id='" + hostname + "-ram'></canvas>"
-            html += "<div class='partitions'>"
-            var partitionCounter = 0
-for (partition in data[hostname]["partitions"]) {
+        html += "<div class=\"" + hostname + " system\">"
+        html += "<div>"
+        html += "<div class='hostname'>" + hostname + "</div>"
+        html += "<div class='last-updated'>" + data[hostname]["time"] + "</div>"
+        html += "</div>"
+        html += "<canvas class='cpu' id='" + hostname + "-cpu'></canvas>"
+        html += "<canvas class='ram' id='" + hostname + "-ram'></canvas>"
+        html += "<div class='partitions'>"
+        var partitionCounter = 0
+        for (partition in data[hostname]["partitions"]) {
             html += "<canvas class='disk' id='" + hostname + "-disk" + partitionCounter + "'></canvas>"
             partitionCounter++
-}
-            html += "</div>"
-            html += "</div>"
         }
+        html += "</div>"
+        html += "</div>"
 
         html += "</table>"
 
